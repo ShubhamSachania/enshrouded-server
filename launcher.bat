@@ -27,4 +27,3 @@ if exist "%SAVES%\world0.ksd" (
 )
 
 echo Done! Everything is synced.
-pause
