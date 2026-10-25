@@ -1,32 +1,16 @@
 @echo off
-title Enshrouded Pull Latest World
+cd /d "%~dp0"
+set "SAVES=C:\Users\Public\Documents\OnlineFix\1203620\Saves"
 
-:: ==========================================
-:: SETTINGS
-:: ==========================================
-set "WorldName=world0"
-set "WorldFolder=C:\Users\Public\Documents\OnlineFix\1203620\Saves"
-:: ==========================================
+echo Pulling latest save from GitHub...
+git pull origin main
 
-set "GitFolder=%~dp0"
-cd /d "%GitFolder%"
-
-if not exist "%WorldFolder%" mkdir "%WorldFolder%"
-
-echo [1/2] Pulling latest saves from GitHub...
-if exist ".git" (
-    git pull origin main
+if exist "world0.ksd" (
+    echo Applying world save to game...
+    copy /y "world0.ksd" "%SAVES%\"
 ) else (
-    echo Note: .git repository not detected. Skipping git pull.
+    echo No world0.ksd found in this folder. Skipping copy.
 )
 
-echo [2/2] Copying "%WorldName%" files to Enshrouded saves...
-if exist "%GitFolder%%WorldName%\" (
-    robocopy "%GitFolder%%WorldName%" "%WorldFolder%" "%WorldName%.*" /NDL /NFL /NJH /NJS /NP
-) else (
-    if exist "%GitFolder%%WorldName%.ksd" copy /Y "%GitFolder%%WorldName%.ksd" "%WorldFolder%\"
-    if exist "%GitFolder%%WorldName%.ksd.backup" copy /Y "%GitFolder%%WorldName%.ksd.backup" "%WorldFolder%\"
-)
-
-echo Done! Latest world has been copied to your game folder.
+echo Done!
 pause

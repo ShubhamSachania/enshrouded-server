@@ -1,27 +1,16 @@
 @echo off
-title Enshrouded Push Current World to GitHub
+cd /d "%~dp0"
+set "SAVES=C:\Users\Public\Documents\OnlineFix\1203620\Saves"
 
-:: ==========================================
-:: SETTINGS
-:: ==========================================
-set "WorldName=world0"
-set "WorldFolder=C:\Users\Public\Documents\OnlineFix\1203620\Saves"
-:: ==========================================
-
-set "GitFolder=%~dp0"
-cd /d "%GitFolder%"
-
-echo [1/2] Copying "%WorldName%" files from game save to this folder...
-if exist "%WorldFolder%\%WorldName%.ksd" copy /Y "%WorldFolder%\%WorldName%.ksd" "%GitFolder%"
-if exist "%WorldFolder%\%WorldName%.ksd.backup" copy /Y "%WorldFolder%\%WorldName%.ksd.backup" "%GitFolder%"
-
-echo [2/2] Uploading to GitHub...
-if exist ".git" (
-    git add .
-    git commit -m "Manual auto-save world: %WorldName%"
+if exist "%SAVES%\world0.ksd" (
+    echo Copying world save from game...
+    copy /y "%SAVES%\world0.ksd" .
+    echo Uploading to GitHub...
+    git add world0.ksd
+    git commit -m "Manual save: %date% %time%"
     git push origin main
 ) else (
-    echo Note: .git repository not detected. File copied locally to "%GitFolder%".
+    echo No world save found in "%SAVES%". Skipping copy.
 )
 
 echo Done!
